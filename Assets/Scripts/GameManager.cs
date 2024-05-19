@@ -3,8 +3,21 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager instance {  get; private set; }
     public string[] nameGemPrefab;
-
+    public GameObject coinPrefab;
+    void Awake()
+    {
+        if (instance != null && instance != this)
+        {
+            Destroy(gameObject);
+        }
+        else
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+    }
     void Start()
     {
         SpawnObject();

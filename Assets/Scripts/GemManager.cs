@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class GemController : MonoBehaviour
 {
@@ -7,16 +9,9 @@ public class GemController : MonoBehaviour
     private GameObject closestCell;
     private string gemTag;
     private static int score = 0;
-    private GameObject coin;
-
     void Start()
     {
         gemTag = gameObject.tag;
-        coin = GameObject.FindGameObjectWithTag("Coin");
-        if(coin == null)
-        {
-            Debug.Log("khong tim thay coin");
-        }
     }
 
     void OnMouseDown()
@@ -80,7 +75,7 @@ public class GemController : MonoBehaviour
         }
     }
 
-    void CheckAndDestroyAdjacentGems()
+    private void CheckAndDestroyAdjacentGems()
     {
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, 1.0f);
         foreach (Collider2D collider in colliders)
@@ -90,7 +85,7 @@ public class GemController : MonoBehaviour
             {
                 //xuat hien coin
                 ActiveCoin(gemController);
-
+                StartCoroutine(WaitForActiveGame());
                 gameObject.SetActive(false);
                 gemController.gameObject.SetActive(false);
 
@@ -99,12 +94,20 @@ public class GemController : MonoBehaviour
             }
         }
     }
+    private IEnumerator WaitForActiveGame()
+    {
+        yield return new WaitForSeconds(0.5f);
+    }
+
     private void ActiveCoin(GemController gemController)
     {
         Vector3 middlePosition = Vector3.Lerp(transform.position, gemController.transform.position, 0.5f);
-        coin.transform.position = middlePosition;
-        coin.SetActive(true);
+        GameObject newcoin = Instantiate(GameManager.instance.coinPrefab);
+        newcoin.transform.position = middlePosition;
+        newcoin.GetComponent<CoinManager>().DestroyCoin();
+        Debug.Log("Coin Activated: " + newcoin.activeSelf);
     }
+
     private void Score()
     {
         score += 20;

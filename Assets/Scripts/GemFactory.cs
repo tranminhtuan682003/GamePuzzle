@@ -37,7 +37,6 @@ public class GemFactory : MonoBehaviour
                 obj = InstantiateObject(3);
                 break;
             case "White":
-                Debug.Log("da duoc tao");
                 obj = InstantiateObject(4);
                 break;
             case "Green":
